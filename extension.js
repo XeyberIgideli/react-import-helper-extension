@@ -15,10 +15,27 @@ function activate(context) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "react-import-helper" is now active!');
 
+    let disposable = vscode.workspace.onDidChangeTextDocument((event) => {
+        const editor = vscode.window.activeTextEditor;
+		vscode.window.showInformationMessage('Hello World from React Import Helper!');
+        if (editor && event.document === editor.document) {
+            // Check if new lines have been added at the end of the document
+            const lastLine = editor.document.lineAt(editor.document.lineCount - 1).range;
+            const changes = event.contentChanges.filter(change => lastLine.contains(change.range.end));
+			// console.log(lastLine, changes)
+
+            if (changes.length > 0) {
+                // Automatically trigger the extension's command
+                vscode.commands.executeCommand('extension.importHelper');
+            }
+        }
+    });
+
+	context.subscriptions.push(disposable);
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('react-import-helper.helloWorld', function () {
+	let commandDisposable = vscode.commands.registerCommand('extension.importHelper', function () {
 		// The code you place here will be executed every time your command is executed
         const editor = vscode.window.activeTextEditor; 
         if (editor) {
@@ -26,18 +43,16 @@ function activate(context) {
 			const lineNumber = editor.selection.active.line;
 			// Get the entire line's text
 			const lineText = editor.document.lineAt(lineNumber).text;
-			const match = !lineText.includes('from') ? lineText.replace(/(import|')/g, '').trim() : lineText.match(/import (\{.*\}|\w+) from ['"](.+)['"]/); 
-			// console.log(match)
-            if (match) {
-                const componentName = match[1];
+			const match = !lineText.includes('from') ? lineText.replace(/(import|')/g, '').trim() : lineText.match(/import (\{.*\}|\w+) from ['"](.+)['"]/);  
+ 
+            if (match && match.length >= 2) { 
 				const currentFile = editor.document.uri.fsPath
 				const filePath = match[2].length > 1 ? match[2] : String(match)
 				const filePathSplitted = filePath.split('/')
                 const fileName = match[2].length > 1 ? filePathSplitted[filePathSplitted.length - 1] + path.extname(currentFile) : filePathSplitted[filePathSplitted.length - 1]; 
 
 				if(filePath && isRelativePath(filePath)) { 
-				// Create the folder and file
-					// const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+				// Create the folder and file 
 					const rootPath = path.dirname(currentFile)
             	    createFolderAndFile(rootPath, filePath, fileName);
 				} else {
@@ -52,7 +67,7 @@ function activate(context) {
 		vscode.window.showInformationMessage('Hello World from React Import Helper!');
 	});
 
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(commandDisposable);
 }
 function isRelativePath(filePath) {
     // Check if the file path is relative (starts with a dot or a slash)

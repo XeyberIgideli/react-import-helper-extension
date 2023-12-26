@@ -14,7 +14,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "react-import-helper.helloWorld",
+        "command": "extension.importHelper",
         "title": "Hello World"
       }
     ]
