@@ -53,22 +53,19 @@ function activate(context) {
     vscode.workspace.onDidChangeTextDocument((event) => {
         const editor = vscode.window.activeTextEditor;  
         if (editor && event.document === editor.document) {
-            // Check if the last line has changed 
-            const lineNumber = editor.selection.active.line;
-            let incNumber = lineNumber + 1
-            const currentLine =  editor.document.lineAt(lineNumber).text;
-            const nextLine = editor.document.lineAt(lineNumber + 1).text; 
-            console.log(currentLine, nextLine) 
-            if(editor.document.lineAt(lineNumber).lineNumber + 1 === editor.document.lineAt(lineNumber).lineNumber) {
-                console.log(incNumber)
-            }
-            // Trigger the command if the last line is empty (user pressed Enter at the end)
-            if (currentLine.match(/import (\{.*\}|\w+) from ['"](.+)['"]/)) {
+            // Getting selected text
+            const lineNumber = editor.selection.active.line; 
+            const currentLine =  editor.document.lineAt(lineNumber).text; 
+ 
+            const lineChanged = event.contentChanges[0].text 
+     
+            // Trigger the command if the next line is empty (user pressed Enter at the end)
+            if (currentLine.match(/import (\{.*\}|\w+) from ['"](.+)['"]/) && lineChanged === '\r\n') {
+                console.log('bura isledi')
                 vscode.commands.executeCommand('extension.importHelper');
             }
         }
-    });
-    // vscode.commands.executeCommand("extension.importHelper");
+    }); 
 }
 function isRelativePath(filePath) {
     // Check if the file path is relative (starts with a dot or a slash)
