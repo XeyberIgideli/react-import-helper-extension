@@ -57,11 +57,13 @@ function activate(context) {
             const lineNumber = editor.selection.active.line; 
             const currentLine =  editor.document.lineAt(lineNumber).text; 
  
-            const lineChanged = event.contentChanges[0].text 
-     
+            const lineChanged = event.contentChanges[0].text  
+            const lineSplitted = currentLine.trim().split(' ')
+            
+            const lineCheck = currentLine.includes('import') ? !currentLine.includes('from') ? true : lineSplitted[lineSplitted.length - 1] !== 'from' ? true : false : false
+            
             // Trigger the command if the next line is empty (user pressed Enter at the end)
-            if (currentLine.match(/import (\{.*\}|\w+) from ['"](.+)['"]/) && lineChanged === '\r\n') {
-                console.log('bura isledi')
+            if (lineCheck && lineChanged === '\r\n') {
                 vscode.commands.executeCommand('extension.importHelper');
             }
         }
