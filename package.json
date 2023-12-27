@@ -9,13 +9,13 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [ "*" ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
       {
         "command": "extension.importHelper",
-        "title": "Hello World"
+        "title": "Run React Import Helper"
       }
     ]
   },
