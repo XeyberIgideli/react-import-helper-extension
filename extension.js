@@ -15,7 +15,6 @@ function activate(context) {
         const editor = vscode.window.activeTextEditor; 
 
         if (editor) {
-
             // Get the selected text 
 			const lineNumber = editor.selection.active.line;
 			// Get the entire line's text
@@ -35,16 +34,9 @@ function activate(context) {
 				// Create the folder and file 
 					const rootPath = path.dirname(currentFile)
             	    createFolderAndFile(rootPath, filePath, fileName, componentName,componentNameRaw);
-				} else {
-					vscode.window.showInformationMessage('Cannot create components for external packages or libraries.');
-				}
-
-            } else {
-                vscode.window.showInformationMessage('No import statement found on the current line.');
+				} 
             } 
-		}
-		// Display a message box
-		vscode.window.showInformationMessage('Hello World from React Import Helper!');
+		} 
 	});
  
 
@@ -73,40 +65,40 @@ function isRelativePath(filePath) {
     // Check if the file path is relative (starts with a dot or a slash)
     return filePath.startsWith('.') || filePath.startsWith('/');
 }
-function createFolderAndFile(rootPath, filePath, fileName, componentName, singleComponent) {
+function createFolderAndFile(rootPath, filePath, fileName, componentName, componentNameRaw) {
     const folderPath = filePath.endsWith('/') ? filePath : path.dirname(filePath);
     const fullFolderPath = path.join(rootPath, folderPath);
     const fullFilePath = path.join(fullFolderPath, fileName);    
+    if (fileName !== "undefined" ) {
 
     // Check if the folder exists, create it if not
     if (!fs.existsSync(fullFolderPath)) {
-        fs.mkdirSync(fullFolderPath, { recursive: true });
-        vscode.window.showInformationMessage(`Folder created: ${folderPath}`);
+        fs.mkdirSync(fullFolderPath, { recursive: true }); 
     }
 
-    // Check if the file exists, create it if not
-
-    if (fileName !== "undefined" ) {
+    // Check if the file exists, create it if not 
         if (!fs.existsSync(fullFilePath) ) {
-            let importText = `import React from 'react';\n`;
-            let exportText = `\n\nexport default ${componentName.join('')};\n`;
-            if(componentName.length > 1) {
-                exportText = `\n\nexport ${singleComponent};\n`;
-            }
-            fs.appendFileSync(fullFilePath, importText)
-            componentName.map(compname => {
-                fs.appendFileSync(
-                    fullFilePath,
-                    `\nfunction ${compname}() {\n  return (\n    <div>\n      {/* ${compname} component */}\n    </div>\n  );\n}`
-                );
-            })
-            fs.appendFileSync(fullFilePath, exportText)
-            vscode.window.showInformationMessage(`File created: ${filePath}`);
-        } else {
-            vscode.window.showInformationMessage(`File already exists: ${filePath}`);
+            if(fileName.split('.')[1] === 'js') {
+                let importText = `import React from 'react';\n`;
+                let exportText = `\n\nexport default ${componentName.join('')};\n`;
+                if(componentName.length > 1) {
+                    exportText = `\n\nexport ${componentNameRaw};\n`;
+                }
+                fs.appendFileSync(fullFilePath, importText)
+                componentName.map(compname => {
+                    fs.appendFileSync(
+                        fullFilePath,
+                        `\nfunction ${compname}() {\n  return (\n    <div>\n      {/* ${compname} component */}\n    </div>\n  );\n}`
+                    );
+                })
+                fs.appendFileSync(fullFilePath, exportText)
+            } else {
+                fs.writeFileSync(fullFilePath,'')
+            } 
+        } else { 
         }
     } else {
-        // vscode.window.showInformationMessage(`Please write filename!`);
+        vscode.window.showWarningMessage(`Write the name of the file to be created, please.`);
     }
 
 }
