@@ -11,7 +11,7 @@ const path = require('path');
  */
 function activate(context) { 
 
- 	let disposable = vscode.commands.registerCommand('extension.importHelper', function () {
+ 	let disposable = vscode.commands.registerCommand('extension.SmartImport', function () {
         const editor = vscode.window.activeTextEditor; 
 
         if (editor) {
@@ -20,15 +20,14 @@ function activate(context) {
 			// Get the entire line's text
 			const lineText = editor.document.lineAt(lineNumber).text;
 			const match = !lineText.includes('from') ? lineText.replace(/(import|')/g, '').trim() : lineText.match(/import (\{.*\}|\w+) from ['"](.+)['"]/);  
-            // const isEnterPressed = event.selections.some(sel => sel.isSingleLine && sel.active.character === 0);
-            // console.log(isEnterPressed)
-            
+  
             if (match && match.length >= 2) { 
 				const currentFile = editor.document.uri.fsPath
 				const filePath = match[2].length > 1 ? match[2] : String(match)
 				const filePathSplitted = !filePath.endsWith('/') ? filePath.split('/') : "undefined"
-                const fileName = filePathSplitted === "undefined" ? filePathSplitted : match[2].length > 1 ? filePathSplitted[filePathSplitted.length - 1] + path.extname(currentFile) : filePathSplitted[filePathSplitted.length - 1]; 
+                const fileName = filePathSplitted === "undefined" ? filePathSplitted : match[2].length > 1 ? filePathSplitted[filePathSplitted.length - 1] + path.extname(currentFile) : !filePathSplitted[filePathSplitted.length - 1].includes('.') ? filePathSplitted[filePathSplitted.length - 1] + path.extname(currentFile) : filePathSplitted[filePathSplitted.length - 1]; 
                 const componentNameRaw = match[1]
+                 
                 const componentName = match[1].includes('}') ? match[1].replace(/({|})/g, '').split(',') : [match[1].replace("'", '')   ]
 				if(filePath && isRelativePath(filePath)) { 
 				// Create the folder and file 
@@ -53,10 +52,9 @@ function activate(context) {
             const lineSplitted = currentLine.trim().split(' ')
             
             const lineCheck = currentLine.includes('import') ? !currentLine.includes('from') ? true : lineSplitted[lineSplitted.length - 1] !== 'from' ? true : false : false
-            
             // Trigger the command if the next line is empty (user pressed Enter at the end)
-            if (lineCheck && lineChanged === '\r\n') {
-                vscode.commands.executeCommand('extension.importHelper');
+            if (lineCheck && lineChanged === '\r\n') { 
+                vscode.commands.executeCommand('extension.SmartImport');
             }
         }
     }); 

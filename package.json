@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.importHelper",
-        "title": "Run React Import Helper"
+        "command": "extension.SmartImport",
+        "title": "Run SmartImport"
       }
     ]
   },
