@@ -76,9 +76,9 @@ function createFolderAndFile(rootPath, filePath, fileName, componentName, compon
 
     // Check if the file exists, create it if not 
         if (!fs.existsSync(fullFilePath) ) {
-            if(fileName.split('.')[1] === 'js') {
+            let exportText = componentName.length > 1 ? `\n\nexport {${componentName.join(',')}};\n` : `\n\nexport default ${componentName.join('')};\n`;
+            if(fileName.split('.')[1] === 'tsx') {
                 let importText = `import React from 'react';\n`;
-                let exportText = `\n\nexport default ${componentName.join('')};\n`;
                 if(componentName.length > 1) {
                     exportText = `\n\nexport ${componentNameRaw};\n`;
                 }
@@ -91,10 +91,15 @@ function createFolderAndFile(rootPath, filePath, fileName, componentName, compon
                 })
                 fs.appendFileSync(fullFilePath, exportText)
             } else {
-                fs.writeFileSync(fullFilePath,'')
+                componentName.map(compname => {
+                    fs.appendFileSync(
+                        fullFilePath,
+                        `\nfunction ${compname}() {\n  return (\n    <div>\n      {/* ${compname} component */}\n    </div>\n  );\n}`
+                    );
+                })
+                fs.appendFileSync(fullFilePath, exportText)
             } 
-        } else { 
-        }
+        } 
     } else {
         vscode.window.showWarningMessage(`Write the name of the file to be created, please.`);
     }

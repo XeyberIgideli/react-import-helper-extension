@@ -19,6 +19,7 @@
       }
     ]
   },
+  "repository": "https://github.com/XeyberIgideli/smartimport",
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
