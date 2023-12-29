@@ -1,7 +1,7 @@
 {
-  "name": "react-import-helper",
-  "displayName": "React Import Helper",
-  "description": "This extension automatically creates a folder and file when a React component import is detected.",
+  "name": "smartimport",
+  "displayName": "SmartImport",
+  "description": "This extension automatically creates a folder and file when an import statement is detected.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.54.0"
