@@ -94,7 +94,7 @@ function createFolderAndFile(rootPath, filePath, fileName, componentName, compon
                 componentName.map(compname => {
                     fs.appendFileSync(
                         fullFilePath,
-                        `\nfunction ${compname}() {\n  return (\n    <div>\n      {/* ${compname} component */}\n    </div>\n  );\n}`
+                        `\nfunction ${compname}() {\n  return (\n    <div>\n      {/* ${compname} function */}\n    </div>\n  );\n}`
                     );
                 })
                 fs.appendFileSync(fullFilePath, exportText)
