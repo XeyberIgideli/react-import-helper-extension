@@ -19,7 +19,7 @@ SmartImporter is a Visual Studio Code extension that simplifies the process of i
 2. Write or paste an import statement for a module that does not exist yet.
 3. Press `Enter` at the end of the line to trigger SmartImporter.
 
-## Example
+## Example (Javascript)
 
 ```javascript
 // Before using SmartImporter
