@@ -1,6 +1,6 @@
 {
-  "name": "smartimport",
-  "displayName": "SmartImport",
+  "name": "smartimporter",
+  "displayName": "SmartImporter",
   "description": "This extension automatically creates a folder and file when an import statement is detected.",
   "version": "0.0.1",
   "engines": {
@@ -9,17 +9,19 @@
   "categories": [
     "Other"
   ],
+  "publisher": "xig",
   "activationEvents": [ "onStartupFinished" ],
   "main": "./extension.js",
+  "icon": "images/ext-logo.png",
   "contributes": {
     "commands": [
       {
-        "command": "extension.SmartImport",
-        "title": "Run SmartImport"
+        "command": "extension.SmartImporter",
+        "title": "Run SmartImporter"
       }
     ]
   },
-  "repository": "https://github.com/XeyberIgideli/smartimport",
+  "repository": "https://github.com/XeyberIgideli/smartimporter",
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",

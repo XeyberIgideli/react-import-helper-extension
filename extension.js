@@ -11,7 +11,7 @@ const path = require('path');
  */
 function activate(context) { 
 
- 	let disposable = vscode.commands.registerCommand('extension.SmartImport', function () {
+ 	let disposable = vscode.commands.registerCommand('extension.SmartImporter', function () {
         const editor = vscode.window.activeTextEditor; 
 
         if (editor) {
@@ -54,7 +54,7 @@ function activate(context) {
             const lineCheck = currentLine.includes('import') ? !currentLine.includes('from') ? true : lineSplitted[lineSplitted.length - 1] !== 'from' ? true : false : false
             // Trigger the command if the next line is empty (user pressed Enter at the end)
             if (lineCheck && lineChanged === '\r\n') { 
-                vscode.commands.executeCommand('extension.SmartImport');
+                vscode.commands.executeCommand('extension.SmartImporter');
             }
         }
     }); 
