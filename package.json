@@ -2,7 +2,7 @@
   "name": "smartimporter",
   "displayName": "SmartImporter",
   "description": "This extension automatically creates a folder and file when an import statement is detected.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.54.0"
   },
