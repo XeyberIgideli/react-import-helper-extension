@@ -24,10 +24,10 @@ function activate(context) {
             if (match && match.length >= 2) { 
 				const currentFile = editor.document.uri.fsPath
 				const filePath = match[2].length > 1 ? match[2] : String(match)
-				const filePathSplitted = !filePath.endsWith('/') ? filePath.split('/') : "undefined"
-                const fileName = filePathSplitted === "undefined" ? filePathSplitted : match[2].length > 1 ? filePathSplitted[filePathSplitted.length - 1] + path.extname(currentFile) : !filePathSplitted[filePathSplitted.length - 1].includes('.') ? filePathSplitted[filePathSplitted.length - 1] + path.extname(currentFile) : filePathSplitted[filePathSplitted.length - 1]; 
+				const filePathSplitted = !filePath.endsWith('/') ? filePath.split('/') : undefined
+                const fileName = filePathSplitted === undefined ? filePathSplitted : match[2].length > 1 ? filePathSplitted[filePathSplitted.length - 1] + path.extname(currentFile) : !filePathSplitted[filePathSplitted.length - 1].includes('.') ? filePathSplitted[filePathSplitted.length - 1] + path.extname(currentFile) : filePathSplitted[filePathSplitted.length - 1]; 
                 const componentNameRaw = match[1]
-                 
+                
                 const componentName = match[1].includes('}') ? match[1].replace(/({|})/g, '').split(',') : [match[1].replace("'", '')   ]
 				if(filePath && isRelativePath(filePath)) { 
 				// Create the folder and file 
@@ -64,18 +64,18 @@ function isRelativePath(filePath) {
     return filePath.startsWith('.') || filePath.startsWith('/');
 }
 function createFolderAndFile(rootPath, filePath, fileName, componentName, componentNameRaw) {
-    const folderPath = filePath.endsWith('/') ? filePath : path.dirname(filePath);
-    const fullFolderPath = path.join(rootPath, folderPath);
-    const fullFilePath = path.join(fullFolderPath, fileName);    
-    if (fileName !== "undefined" ) {
+    if (fileName) {
+        const folderPath = filePath.endsWith('/') ? filePath : path.dirname(filePath);
+        const fullFolderPath = path.join(rootPath, folderPath);
+        const fullFilePath = path.join(fullFolderPath, fileName);
 
-    // Check if the folder exists, create it if not
-    if (!fs.existsSync(fullFolderPath)) {
-        fs.mkdirSync(fullFolderPath, { recursive: true }); 
-    }
+        // Check if the folder exists, create it if not
+        if (!fs.existsSync(fullFolderPath)) {
+            fs.mkdirSync(fullFolderPath, { recursive: true }); 
+        }
 
     // Check if the file exists, create it if not 
-        if (!fs.existsSync(fullFilePath) ) {
+        if (!fs.existsSync(fullFilePath) ) { 
             let exportText = componentName.length > 1 ? `\n\nexport {${componentName.join(',')}};\n` : `\n\nexport default ${componentName.join('')};\n`;
             if(fileName.split('.')[1] === 'tsx') {
                 let importText = `import React from 'react';\n`;
@@ -90,16 +90,23 @@ function createFolderAndFile(rootPath, filePath, fileName, componentName, compon
                     );
                 })
                 fs.appendFileSync(fullFilePath, exportText)
+            } else if(fileName.split('.')[1] === 'js') {
+                componentName.map(compname => {
+                    fs.appendFileSync(
+                        fullFilePath,
+                        `\nfunction ${compname}() {\n  return "${compname} function created";\n}`
+                    );
+                })
+                fs.appendFileSync(fullFilePath, exportText)
             } else {
                 componentName.map(compname => {
                     fs.appendFileSync(
                         fullFilePath,
-                        `\nfunction ${compname}() {\n  return (\n    <div>\n      {/* ${compname} function */}\n    </div>\n  );\n}`
+                        ''
                     );
-                })
-                fs.appendFileSync(fullFilePath, exportText)
-            } 
-        } 
+                }) 
+            }
+        }  
     } else {
         vscode.window.showWarningMessage(`Write the name of the file to be created, please.`);
     }

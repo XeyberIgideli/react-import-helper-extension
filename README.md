@@ -2,7 +2,7 @@
 
 SmartImporter is a Visual Studio Code extension that simplifies the process of importing modules in your code by automatically creating folders and files for non-existing imports. It helps facilitate your development workflow by reducing the manual effort required to set up file structures.
 
-![](https://github.com/XeyberIgideli/smartimporter/blob/main/images/smartimporter.gif)
+![](https://raw.githubusercontent.com/XeyberIgideli/smartimporter/main/images/smartimporter.gif)
 
 ## Features
 
